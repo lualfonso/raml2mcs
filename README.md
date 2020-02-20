@@ -3,7 +3,7 @@ Create Java Spring Services from a RAML generated from [yaml2raml](https://githu
 
 ## Command
 
-    raml2mcs.rb --from raml_folder --to generate_code
+    raml2mcs.rb --from raml_folder --to java_output
     
 ## To Do List
 -  JUnit Test
