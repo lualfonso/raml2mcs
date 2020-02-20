@@ -1,0 +1,54 @@
+
+package <%= package %>.converter;
+ <%  @entity_to_model_struc.each do |model,props| %>
+import <%= package %>.model.<%= model %>Model;<%  end %>
+ <%  @model_to_entity_struc.each do |model,props| %>import <%= package %>.model.<%= model %>Model;
+<%  end %>
+import <%= package %>.bean.<%= @converter_name %>Bean;
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.stereotype.Component;
+
+/**
+ *
+ * @author CILALFONSO
+ */
+@Component
+public class <%= @converter_name %>Converter {
+    <%  @entity_to_model_struc.each do |model,props| %>
+        public List<<%= model %>Model> entitiesToModels(List<<%= @converter_name %>Bean> entities) {
+        if (isNull(entities)) {
+            return null;
+        }
+        List<<%= model %>Model> models = new ArrayList();
+        entities.forEach(m -> models.add(entityToModel(m)));
+        return models;
+    }
+
+    public <%= model %>Model entityToModel(<%= @converter_name %>Bean entity) {
+        if (isNull(entity)) {
+            return null;
+        }
+        <%= model %>Model model = new <%= model %>Model();
+        <%  props.each do |name,value| %>
+        model.set<%= value[:name] %>(entity.get<%= value[:type] %>());        <%  end %>
+        return model;
+    }
+    <%  end %>
+    <%  @model_to_entity_struc.each do |model,props| %>
+    public <%= @converter_name %>Bean modelToEntity(<%= model %>Model model) {
+        if (isNull(model)) {
+            return null;
+        }
+        <%= @converter_name %>Bean entity = new <%= @converter_name %>Bean();
+        <%  props.each do |name,value| %>
+        entity.set<%= value[:type] %>(model.get<%= value[:name] %>()); <%  end %>
+        return entity;
+    }
+    <%  end %>
+
+
+    public Boolean isNull(Object any) {
+        return any == null;
+    }
+}

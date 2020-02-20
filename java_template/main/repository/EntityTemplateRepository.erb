@@ -1,0 +1,26 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package <%= package %>.repository;
+
+import java.util.List;
+import java.util.Optional;
+import <%= package %>.bean.<%= @repository_name %>Bean;
+
+public interface <%= @repository_name %>Repository {
+    int count();
+
+    int save(<%= @repository_name %>Bean entity);
+
+    int update(<%= @repository_name %>Bean entity);
+
+    int deleteById(Long id);
+
+    List<<%= @repository_name %>Bean> findAll();
+
+    Optional<<%= @repository_name %>Bean> findById(Long id);
+
+    
+}

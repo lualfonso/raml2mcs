@@ -1,0 +1,23 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package <%= package %>.service;
+
+import <%= package %>.model.*;
+
+/**
+ *
+ * @author CILALFONSO
+ */
+public interface <%= @service_name %>Service {    <% @service_props.each do |service, props| %><% if props["get"] && !props["get"][:request][:path].nil? %>
+    public <%= props["get"][:response][:object] %>Model getEntity(Long <%= props["get"][:request][:path] %>);<% end %>    <% if props["get"] && props["get"][:request][:path].nil? %>
+    public <%= props["get"][:response][:object] %>Model getEntities();<% end %>    <% if props["post"] %>
+    public <%= props["post"][:response][:object] %>Model postEntity(<%= props["post"][:request][:body] %>Model model);<% end %> <% if props["put"] %>
+    public <%= props["put"][:response][:object] %>Model putEntity(<%= props["put"][:request][:body] %>Model model);<% end %><% if props["delete"] %>
+    public void deleteEntity(Long <%= props["delete"][:request][:path] %>);<% end %><% end %>
+    
+    
+
+}

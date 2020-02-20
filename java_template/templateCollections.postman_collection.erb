@@ -1,0 +1,49 @@
+{
+	"info": {
+		"_postman_id": "684d51e2-4246-443c-9ce1-e6dbb8c87ea2",
+		"name": "templateCollections",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},<% comma_flag = false %>
+	"item": [<% @domains.each do |key, methods| %>
+	<% methods.select{|key,value| value.is_a?Hash }.each do |domain, props| %>
+	<% props.each do |method, values| %>
+		<% if (comma_flag== true) %>,<% else comma_flag = true  %><% end %>
+		{
+			"name": "<%= key %>",
+			"request": {
+				"method": "<%= method %>",
+				"header":[<% if method=="post" || method=="put" %> 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				<% end %>],
+				<% if method=="post" || method=="put" %>"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},<% end %>
+				"url": {
+					"raw": "http://localhost:8080/<%= @version %><%= domain %>",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"<%= @version %>",
+						"<%= domain.sub("/","") %>"
+					]
+				}
+			},
+			"response": []
+		}	<% end %> <% end %> <% end %>
+	],
+	"protocolProfileBehavior": {}
+}

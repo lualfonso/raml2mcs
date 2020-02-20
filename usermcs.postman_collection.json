@@ -1,0 +1,153 @@
+{
+	"info": {
+		"_postman_id": "684d51e2-4246-443c-9ce1-e6dbb8c87ea2",
+		"name": "templateCollections",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+	
+	
+		
+		{
+			"name": "/users",
+			"request": {
+				"method": "get",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/users",
+			"request": {
+				"method": "post",
+				"header":[ 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users"
+					]
+				}
+			},
+			"response": []
+		}	 
+	
+		,
+		{
+			"name": "/users",
+			"request": {
+				"method": "get",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/users/{user_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users/{user_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/users",
+			"request": {
+				"method": "put",
+				"header":[ 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/users/{user_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users/{user_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/users",
+			"request": {
+				"method": "delete",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/users/{user_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"users/{user_id}"
+					]
+				}
+			},
+			"response": []
+		}	  
+	],
+	"protocolProfileBehavior": {}
+}

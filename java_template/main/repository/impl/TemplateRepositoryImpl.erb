@@ -1,0 +1,77 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package <%= package %>.repository.impl;
+
+import java.util.List;
+import java.util.Optional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.stereotype.Repository;
+import <%= package %>.bean.<%= @repository_name %>Bean;
+import <%= package %>.repository.<%= @repository_name %>Repository;
+/**
+ *
+ * @author Luis Alfonso
+ */
+@Repository
+public class <%= @repository_name %>RepositoryImpl implements <%= @repository_name %>Repository {
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Override
+    public int count() {
+        return jdbcTemplate.queryForObject("select count(*) from <%= @repository_name.downcase %>", Integer.class);
+    }
+
+    @Override
+    public int save(<%= @repository_name %>Bean entity) {
+        return jdbcTemplate.update(
+                "insert into <%= @repository_name.downcase %> (<% @entity_insert.each_with_index do |(key, type),index| %><% if type[:name].underscore!=@identity  %> <%= type[:name].underscore  %><% if index != @entity_insert.size - 1 %>,<% end %><% end %><% end %>) values(<% @entity_insert.each_with_index do |(key, type),index| %><% if type[:name].underscore!=@identity  %>?<% if index != @entity_insert.size - 1 %>,<% end %><% end %><% end %>)",
+                <% @entity_insert.each_with_index do |(key, type),index| %><% if type[:name].underscore!=@identity  %> entity.get<%= type[:name] %>()<% if index != @entity_insert.size - 1 %>,<% end %><% end %><% end %>);
+    }
+
+    @Override
+    public int update(<%= @repository_name %>Bean entity) {
+        return jdbcTemplate.update(
+                "update <%= @repository_name.downcase %> set <% @entity_insert.each_with_index do |(key, type),index| %><% if type[:name].underscore!=@identity  %><%= type[:name].underscore %>= ? <% if index != @entity_struc.size - 1 %>,<% end %><% end %><% end %> where <%= @identity %>  = ?  ",
+                <% @entity_insert.each do |key, type| %> <% if type[:name].underscore!=@identity %> entity.get<%= type[:name] %>(),<% end %><% end %> entity.get<%= @identity.camelize %>());
+    }
+
+    @Override
+    public int deleteById(Long id) {
+        return jdbcTemplate.update(
+                "delete from <%= @repository_name.downcase %> where <%= @identity %> = ?",
+                id);
+    }
+
+    @Override
+    public List<<%= @repository_name %>Bean> findAll() {
+        return jdbcTemplate.query(
+                "select <%= @fields %> from <%= @repository_name.downcase %> <%= @joins %> ",
+                (rs, rowNum) ->
+                        new <%= @repository_name %>Bean(
+                            <% @entity_struc.each_with_index  do |(key, type), index| %>  rs.get<%= type[:type] %>("<%= type[:name].underscore %>")<% if index != @entity_struc.size - 1 %>,<% end %>
+                            <% end -%>)
+        );
+    }
+
+    @Override
+    public Optional<<%= @repository_name %>Bean> findById(Long id) {
+        return jdbcTemplate.queryForObject(
+                "select <%= @fields %>from <%= @repository_name.downcase %> <%= @joins %> where <%= @identity %> = ?",
+                new Object[]{id},
+                (rs, rowNum) ->
+                        Optional.of(new <%= @repository_name %>Bean(
+                            <% @entity_struc.each_with_index do |(key, type), index| %>  rs.get<%= type[:type] %>("<%= type[:name].underscore %>")<% if index != @entity_struc.size - 1 %>,<% end %>
+                            <% end -%>))
+        );
+    }
+
+}
