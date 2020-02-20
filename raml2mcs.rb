@@ -14,11 +14,11 @@ end
 @root_dir = "../yaml2raml/out"
 @dir_root = "java_output"
 OptionParser.new do |parser|
-     parser.on('-f', '--from') do |dir|
+     parser.on('-f', '--from=DIR') do |dir|
        p dir
        @root_dir = dir
      end
-     parser.on('-t', '--to') do |dir|
+     parser.on('-t', '--to=DIR') do |dir|
           p dir
           @dir_root = dir
           end
