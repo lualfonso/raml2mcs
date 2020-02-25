@@ -36,12 +36,12 @@ public class <%= @name %> {
     <% @controller.select{|key,value| value.is_a?Hash }.each do |domain, props| %>
     <% props.each do |method, values| %><% if method == "get" %> 
     @GetMapping("<%= domain %>")
-    public ResponseEntity getEntity(<% if !values[:request][:path].nil?  %>@PathVariable Long <%= values[:request][:path] %> <% end %>)  {
+    public ResponseEntity getEntity(<% if !values[:request][:path].nil?  %><% values[:request][:path].each_with_index do |(path), index| %>@PathVariable Long <%= path %> <% if index != values[:request][:path].size - 1 %>,<% end %><% end %><% end %>)  {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "<%= @name %>");
         <% if values[:request][:path].nil? %>
         <%= values[:response][:object] %>Model wrapper = <%= @controller[:serviceName].downcase %>Service.getEntities();        <% else %>
-        <%= values[:response][:object] %>Model wrapper = <%= @controller[:serviceName].downcase %>Service.getEntity(<%= values[:request][:path] %>);        <% end %>
+        <%= values[:response][:object] %>Model wrapper = <%= @controller[:serviceName].downcase %>Service.getEntity(<% values[:request][:path].each_with_index do |(path), index| %><%= path %><% if index != values[:request][:path].size - 1 %>,<% end %><% end %>);        <% end %>
         return ResponseEntity.<%= values[:response][:code] %>().headers(headers).body(wrapper);
     }    <% end %>    <% if method == "post" %>
 
@@ -53,11 +53,12 @@ public class <%= @name %> {
     }    <% end %>    <% if method == "put" %>
 
     @PutMapping("<%= domain %>")
-    public ResponseEntity putEntity(<% if !values[:request][:path].nil?  %>@PathVariable Long <%= values[:request][:path] %>, <% end %> <% if !values[:request][:body].nil?  %> @RequestBody <%= values[:request][:body] %>Model body <% end %>) {
+    public ResponseEntity putEntity(<% if !values[:request][:path].nil?  %><% values[:request][:path].each do |path| %>@PathVariable Long <%=path %>, <% end %><% end %> <% if !values[:request][:body].nil?  %> @RequestBody <%= values[:request][:body] %>Model body <% end %>) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "<%= @name %>");
         <% if !values[:request][:path].nil? %>if (<%=values[:request][:path]%> != null){
-        body.getData().set<%= values[:request][:path].camelize %>(<%= values[:request][:path] %>);
+            <% values[:request][:path].each do |path| %>
+        body.getData().set<%= path.camelize %>(<%= path %>);        <% end %>
         }<% end %>
         return ResponseEntity.<%= values[:response][:code] %>().headers(headers).body(<%= @controller[:serviceName].downcase %>Service.putEntity(body));
     }    <% end -%>    <% if method == "delete" %>

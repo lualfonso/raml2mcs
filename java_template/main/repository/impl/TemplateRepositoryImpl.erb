@@ -65,7 +65,7 @@ public class <%= @repository_name %>RepositoryImpl implements <%= @repository_na
     @Override
     public Optional<<%= @repository_name %>Bean> findById(Long id) {
         return jdbcTemplate.queryForObject(
-                "select <%= @fields %>from <%= @repository_name.downcase %> <%= @joins %> where <%= @identity %> = ?",
+                "select <%= @fields %>from <%= @repository_name.downcase %> <%= @joins %> where  <%= @repository_name.downcase %>.<%= @identity %> = ?",
                 new Object[]{id},
                 (rs, rowNum) ->
                         Optional.of(new <%= @repository_name %>Bean(
