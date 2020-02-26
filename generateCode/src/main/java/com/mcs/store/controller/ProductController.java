@@ -40,7 +40,7 @@ public class ProductController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "ProductController");
         
-        ProductsGetDataModel wrapper = productService.getEntity([]);        
+        ProductsGetDataModel wrapper = productService.getEntity();        
         return ResponseEntity.ok().headers(headers).body(wrapper);
     }                        
 
@@ -56,15 +56,15 @@ public class ProductController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "ProductController");
         
-        ProductGetDataModel wrapper = productService.getEntity(["product_id"]);        
+        ProductGetDataModel wrapper = productService.getEntity(product_id);        
         return ResponseEntity.ok().headers(headers).body(wrapper);
     }                            
 
     @PutMapping("/products/{product_id}")
-    public ResponseEntity putEntity(@PathVariable Long ["product_id"],   @RequestBody ProductsPutDataModel body ) {
+    public ResponseEntity putEntity(@PathVariable Long product_id,   @RequestBody ProductsPutDataModel body ) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Responded", "ProductController");
-        if (["product_id"] != null){
+        headers.add("Responded", "ProductController"); 
+        if (product_id != null){
             
         body.getData().setProductId(product_id);        
         }
@@ -72,7 +72,7 @@ public class ProductController {
     }                        
 
     @DeleteMapping("/products/{product_id}")
-    public ResponseEntity deleteEntity(@PathVariable Long ["product_id"] ) {
+    public ResponseEntity deleteEntity(@PathVariable Long product_id ) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "ProductController");
         productService.deleteEntity(["product_id"]);

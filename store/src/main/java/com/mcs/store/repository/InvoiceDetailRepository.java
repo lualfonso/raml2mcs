@@ -16,11 +16,11 @@ public interface InvoiceDetailRepository {
 
     int update(InvoiceDetailBean entity);
 
-    int deleteById(Long id);
+    int deleteById(Long invoice_id, Long detail_id);
 
-    List<InvoiceDetailBean> findAll();
+    List<InvoiceDetailBean> findAll(Long invoice_id);
 
-    Optional<InvoiceDetailBean> findById(Long id);
+    Optional<InvoiceDetailBean> findById(Long invoice_id, Long detail_id);
 
     
 }

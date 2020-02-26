@@ -19,42 +19,41 @@ import <%= package %>.repository.<%= @repository_name %>Repository;
  */
 @Repository
 public class <%= @repository_name %>RepositoryImpl implements <%= @repository_name %>Repository {
-
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Override
     public int count() {
-        return jdbcTemplate.queryForObject("select count(*) from <%= @repository_name.downcase %>", Integer.class);
+        return jdbcTemplate.queryForObject("select count(*) from <%= @repository_name.underscore.downcase %>", Integer.class);
     }
 
     @Override
     public int save(<%= @repository_name %>Bean entity) {
         return jdbcTemplate.update(
-                "insert into <%= @repository_name.downcase %> (<% @entity_insert.each_with_index do |(key, type),index| %><% if type[:name].underscore!=@identity  %> <%= type[:name].underscore  %><% if index != @entity_insert.size - 1 %>,<% end %><% end %><% end %>) values(<% @entity_insert.each_with_index do |(key, type),index| %><% if type[:name].underscore!=@identity  %>?<% if index != @entity_insert.size - 1 %>,<% end %><% end %><% end %>)",
+                "insert into <%= @repository_name.underscore.downcase %> (<% @entity_insert.each_with_index do |(key, type),index| %><% if type[:name].underscore!=@identity  %> <%= type[:name].underscore  %><% if index != @entity_insert.size - 1 %>,<% end %><% end %><% end %>) values(<% @entity_insert.each_with_index do |(key, type),index| %><% if type[:name].underscore!=@identity  %>?<% if index != @entity_insert.size - 1 %>,<% end %><% end %><% end %>)",
                 <% @entity_insert.each_with_index do |(key, type),index| %><% if type[:name].underscore!=@identity  %> entity.get<%= type[:name] %>()<% if index != @entity_insert.size - 1 %>,<% end %><% end %><% end %>);
     }
 
     @Override
     public int update(<%= @repository_name %>Bean entity) {
         return jdbcTemplate.update(
-                "update <%= @repository_name.downcase %> set <% @entity_insert.each_with_index do |(key, type),index| %><% if type[:name].underscore!=@identity  %><%= type[:name].underscore %>= ? <% if index != @entity_struc.size - 1 %>,<% end %><% end %><% end %> where <%= @identity %>  = ?  ",
-                <% @entity_insert.each do |key, type| %> <% if type[:name].underscore!=@identity %> entity.get<%= type[:name] %>(),<% end %><% end %> entity.get<%= @identity.camelize %>());
+                "update <%= @repository_name.underscore.downcase %> set <% @entity_insert.each_with_index do |(key, type),index| %><% if !@pk.include?(type[:name].underscore)  %><%= type[:name].underscore %>= ?<% if index != @entity_struc.size - 1 %>, <% end %><% end %><% end %> where <% @pk.each_with_index do |pk,index| %><%= pk.underscore %> = ?<% if index != @pk.size - 1 %> and <% end %><% end %>",
+                <% @entity_insert.each do |key, type| %><% if !@pk.include?(type[:name].underscore) %>entity.get<%= type[:name] %>(),<% end %><% end %> <% @pk.each_with_index do |pk,index| %>entity.get<%= pk.camelize %>()<% if index != @pk.size - 1 %>, <% end %><% end %>);
     }
 
     @Override
-    public int deleteById(Long id) {
+    public int deleteById(<% @pk.each_with_index do |pk,index| %>Long <%= pk %><% if index != @pk.size - 1 %>, <% end %><% end %>) {
         return jdbcTemplate.update(
-                "delete from <%= @repository_name.downcase %> where <%= @identity %> = ?",
-                id);
+                "delete from <%= @repository_name.downcase %> where <% @pk.each_with_index do |pk,index| %><%= pk %> = ?<% if index != @pk.size - 1 %> and <% end %><% end %>",
+                <% @pk.each_with_index do |pk,index| %><%= pk %><% if index != @pk.size - 1 %>, <% end %><% end %>);
     }
-
+    
     @Override
-    public List<<%= @repository_name %>Bean> findAll() {
+    public List<<%= @repository_name %>Bean> findAll(<% @pk.each_with_index do |pk,index| %><%if index != @pk.size - 1 %>Long <%= pk %><% end %><% if index < @pk.size - 2 %>, <% end %><% end %>) {
         return jdbcTemplate.query(
-                "select <%= @fields %> from <%= @repository_name.downcase %> <%= @joins %> ",
+                "select <%= @fields %>from <%= @repository_name.underscore.downcase %><%= @joins %><% if @pk.size > 1 %> where <% @pk.each_with_index do |pk,index| %><% if index < @pk.size - 1 %><%= @repository_name.underscore.downcase %>.<%= pk %> = ? <% end %><% if index < @pk.size - 2 %> and <% end %><% end %><% end %>",
+                <% if @pk.size > 1 %>new Object[]{<% @pk.each_with_index do |pk,index| %><%if index != @pk.size - 1 %><%= pk %><% end %><% if index < @pk.size - 2 %>, <% end %><% end %>},<% end %>
                 (rs, rowNum) ->
                         new <%= @repository_name %>Bean(
                             <% @entity_struc.each_with_index  do |(key, type), index| %>  rs.get<%= type[:type] %>("<%= type[:name].underscore %>")<% if index != @entity_struc.size - 1 %>,<% end %>
@@ -63,10 +62,10 @@ public class <%= @repository_name %>RepositoryImpl implements <%= @repository_na
     }
 
     @Override
-    public Optional<<%= @repository_name %>Bean> findById(Long id) {
+    public Optional<<%= @repository_name %>Bean> findById(<% @pk.each_with_index do |pk,index| %>Long <%= pk %><% if index < @pk.size - 1 %>, <% end %><% end %>) {
         return jdbcTemplate.queryForObject(
-                "select <%= @fields %>from <%= @repository_name.downcase %> <%= @joins %> where  <%= @repository_name.downcase %>.<%= @identity %> = ?",
-                new Object[]{id},
+                "select <%= @fields %>from <%= @repository_name.underscore.downcase %> <%= @joins %> where <% @pk.each_with_index do |pk,index| %><%= @repository_name.underscore.downcase %>.<%= pk %> = ? <% if index < @pk.size - 1 %> and <% end %><% end %>",
+                new Object[]{<% @pk.each_with_index do |pk,index| %><%= pk %><% if index < @pk.size - 1 %>, <% end %><% end %>},
                 (rs, rowNum) ->
                         Optional.of(new <%= @repository_name %>Bean(
                             <% @entity_struc.each_with_index do |(key, type), index| %>  rs.get<%= type[:type] %>("<%= type[:name].underscore %>")<% if index != @entity_struc.size - 1 %>,<% end %>

@@ -14,7 +14,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 public class InvoiceBean {
     
-    private Long id;
+    private Long invoiceId;
     private Date date;
     private Long client;
     

@@ -8,49 +8,48 @@ package <%= package %>.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import <%= package %>.model.*;
-
-import <%= package %>.repository.<%= @repository_name %>Repository;
-import <%= package %>.service.<%= @service_name %>Service;
-import  <%= package %>.converter.<%= @repository_name %>Converter;
-
+import <%= package %>.service.<%= @service_name %>Service;<% last = "" %><% @service_props.each do |service, props| %><% if last != props["props"][:entity] || last=="" %><% last = props["props"][:entity] %>
+import <%= package %>.repository.<%= props["props"][:entity]%>Repository;
+import  <%= package %>.converter.<%= props["props"][:entity] %>Converter;    <% end %><% end %> 
 /**
  *
  * @author Luis Alfonso
  */
 @Service
 public class <%= @service_name %>ServiceImpl implements <%= @service_name %>Service {
+     <% last = "" %>    <% @service_props.each do |service, props| %>
+    <% if last != props["props"][:entity] || last=="" %><% last = props["props"][:entity] %>
     @Autowired
-    private <%= @repository_name %>Converter converter;
+    private <%= props["props"][:entity] %>Converter <%= props["props"][:entity].camelize(:lower) %>Converter;
     @Autowired
-    private <%= @repository_name %>Repository repository;
-    <% @service_props.each do |service, props| %>
-    <% if props["get"] && !props["get"][:request][:path].nil? %>
+    private <%= props["props"][:entity] %>Repository <%= props["props"][:entity].camelize(:lower) %>Repository;    <% end %><% end %>   
+    <% @service_props.each do |service, props| %>  <% if props["get"] && service.end_with?("{#{props['get'][:request][:path].last}}") %>
     @Override
-    public <%= props["get"][:response][:object] %>Model getEntity(Long <%= props["get"][:request][:path] %>)
+    public <%= props["get"][:response][:object] %>Model get<%= props["props"][:entity].camelize %>(<% props["get"][:request][:path].each_with_index do |(path),index| %>Long <%= path %><% if index != props["get"][:request][:path].size - 1 %>,<% end %><% end %>)
     {
-         return new <%= props["get"][:response][:object] %>Model(converter.entityToModel(repository.findById(<%= props["get"][:request][:path] %>).get()));
+         return new <%= props["get"][:response][:object] %>Model(<%= props["props"][:entity].camelize(:lower) %>Converter.entityToModel(<%= props["props"][:entity].camelize(:lower) %>Repository.findById(<% props["get"][:request][:path].each_with_index do |(path),index| %><%= path %><% if index != props["get"][:request][:path].size - 1 %>,<% end %><% end %>).get()));
     }
-    <% end %>    <% if props["get"] && props["get"][:request][:path].nil? %>
+    <% end %>    <% if props["get"] && !service.end_with?("{#{props['get'][:request][:path].last}}") %>
     @Override
-    public <%= props["get"][:response][:object] %>Model getEntities()    {
-        return new <%= props["get"][:response][:object] %>Model(converter.entitiesToModels(repository.findAll()));
+    public <%= props["get"][:response][:object] %>Model get<%= props["props"][:entity].pluralize.camelize %>(<% props["get"][:request][:path].each_with_index do |(path),index| %>Long <%= path %><% if index != props["get"][:request][:path].size - 1 %>,<% end %><% end %>)    {
+        return new <%= props["get"][:response][:object] %>Model(<%= props["props"][:entity].camelize(:lower) %>Converter.entitiesToModels(<%= props["props"][:entity].camelize(:lower) %>Repository.findAll(<% props["get"][:request][:path].each_with_index do |(path),index| %><%= path %><% if index != props["get"][:request][:path].size - 1 %>,<% end %><% end %>)));
     }
     <% end %>    <% if props["post"] %>
     @Override
-    public <%=props["post"][:response][:object] %>Model postEntity(<%= props["post"][:request][:body] %>Model model)    {
-        repository.save(converter.modelToEntity(model.getData()));
+    public <%=props["post"][:response][:object] %>Model post<%= props["props"][:entity].camelize %>(<%= props["post"][:request][:body] %>Model model)    {
+        <%= props["props"][:entity].camelize(:lower) %>Repository.save(<%= props["props"][:entity].camelize(:lower) %>Converter.modelToEntity(model.getData()));
         return new <%= props["post"][:response][:object] %>Model()  ; 
     }
     <% end %> <% if props["put"] %>
     @Override
-    public <%= props["put"][:response][:object] %>Model putEntity(<%= props["put"][:request][:body] %>Model model)    {
-        repository.update(converter.modelToEntity(model.getData()));
+    public <%= props["put"][:response][:object] %>Model put<%= props["props"][:entity].camelize %>(<%= props["put"][:request][:body] %>Model model)    {
+        <%= props["props"][:entity].camelize(:lower) %>Repository.update(<%= props["props"][:entity].camelize(:lower) %>Converter.modelToEntity(model.getData()));
         return new <%= props["put"][:response][:object] %>Model()  ; 
     }
     <% end %><% if props["delete"] %>
     @Override
-    public void deleteEntity(Long <%= props["delete"][:request][:path] %>)    {
-          repository.deleteById(<%= props["delete"][:request][:path] %>);
+    public void delete<%= props["props"][:entity].camelize %>(<% props["delete"][:request][:path].each_with_index do |(path),index| %>Long <%= path %><% if index != props["delete"][:request][:path].size - 1 %>,<% end %><% end %>)    {
+          <%= props["props"][:entity].camelize(:lower) %>Repository.deleteById(<% props["delete"][:request][:path].each_with_index do |(path),index| %><%= path %><% if index != props["delete"][:request][:path].size - 1 %>,<% end %><% end %>);
     }    <% end %><% end %>
     
 }

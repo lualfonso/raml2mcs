@@ -11,17 +11,17 @@ import com.mcs.store.model.*;
  *
  * @author CILALFONSO
  */
-public interface InvoiceService {             
-    public InvoicesGetDataModel getEntity(Long []);        
-    public InvoiceGetDataModel postEntity(InvoicesPostDataModel model); 
-    public InvoiceGetDataModel getEntity(Long ["invoice_id"]);         
-    public InvoiceGetDataModel putEntity(InvoicesPutDataModel model);
-    public void deleteEntity(Long ["invoice_id"]);
-    public DetailsGetDataModel getEntity(Long ["invoice_id"]);        
-    public InvoiceDetailGetDataModel postEntity(DetailsPostDataModel model); 
-    public InvoiceDetailGetDataModel getEntity(Long ["invoice_id", "detail_id"]);         
-    public InvoiceDetailGetDataModel putEntity(DetailsPutDataModel model);
-    public void deleteEntity(Long ["invoice_id", "detail_id"]);
+public interface InvoiceService {        
+    public InvoicesGetDataModel getInvoices();    
+    public InvoiceGetDataModel postInvoice(InvoicesPostDataModel model); 
+    public InvoiceGetDataModel getInvoice(Long invoice_id);         
+    public InvoiceGetDataModel putInvoice(InvoicesPutDataModel model);
+    public void deleteInvoice(Long invoice_id);    
+    public InvoiceDetailsGetDataModel getInvoiceDetails(Long invoice_id);    
+    public InvoiceDetailGetDataModel postInvoiceDetail(InvoiceDetailsPostDataModel model); 
+    public InvoiceDetailGetDataModel getInvoiceDetail(Long invoice_id,Long detail_id);         
+    public InvoiceDetailGetDataModel putInvoiceDetail(InvoiceDetailsPutDataModel model);
+    public void deleteInvoiceDetail(Long invoice_id,Long detail_id);
     
     
 

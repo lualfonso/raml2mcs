@@ -32,9 +32,8 @@ public class InvoiceConverter {
         }
         InvoiceGetModel model = new InvoiceGetModel();
         
-        model.setInvoiceId(entity.getId());        
-        model.setInvoiceDate(entity.getDate());        
-        model.setInvoiceClient(entity.getClient());        
+        model.setDate(entity.getDate());        
+        model.setClient(entity.getClient());        
         return model;
     }
     
@@ -45,9 +44,8 @@ public class InvoiceConverter {
         }
         InvoiceBean entity = new InvoiceBean();
         
-        entity.setId(model.getInvoiceId()); 
-        entity.setDate(model.getInvoiceDate()); 
-        entity.setClient(model.getInvoiceClient()); 
+        entity.setDate(model.getDate()); 
+        entity.setClient(model.getClient()); 
         return entity;
     }
     
@@ -57,9 +55,8 @@ public class InvoiceConverter {
         }
         InvoiceBean entity = new InvoiceBean();
         
-        entity.setId(model.getInvoiceId()); 
-        entity.setDate(model.getInvoiceDate()); 
-        entity.setClient(model.getInvoiceClient()); 
+        entity.setDate(model.getDate()); 
+        entity.setClient(model.getClient()); 
         return entity;
     }
     

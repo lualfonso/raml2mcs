@@ -40,7 +40,7 @@ public class InvoiceController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "InvoiceController");
         
-        InvoicesGetDataModel wrapper = invoiceService.getEntity([]);        
+        InvoicesGetDataModel wrapper = invoiceService.getEntity();        
         return ResponseEntity.ok().headers(headers).body(wrapper);
     }                        
 
@@ -56,15 +56,15 @@ public class InvoiceController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "InvoiceController");
         
-        InvoiceGetDataModel wrapper = invoiceService.getEntity(["invoice_id"]);        
+        InvoiceGetDataModel wrapper = invoiceService.getEntity(invoice_id);        
         return ResponseEntity.ok().headers(headers).body(wrapper);
     }                            
 
     @PutMapping("/invoices/{invoice_id}")
-    public ResponseEntity putEntity(@PathVariable Long ["invoice_id"],   @RequestBody InvoicesPutDataModel body ) {
+    public ResponseEntity putEntity(@PathVariable Long invoice_id,   @RequestBody InvoicesPutDataModel body ) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Responded", "InvoiceController");
-        if (["invoice_id"] != null){
+        headers.add("Responded", "InvoiceController"); 
+        if (invoice_id != null){
             
         body.getData().setInvoiceId(invoice_id);        
         }
@@ -72,7 +72,7 @@ public class InvoiceController {
     }                        
 
     @DeleteMapping("/invoices/{invoice_id}")
-    public ResponseEntity deleteEntity(@PathVariable Long ["invoice_id"] ) {
+    public ResponseEntity deleteEntity(@PathVariable Long invoice_id ) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "InvoiceController");
         invoiceService.deleteEntity(["invoice_id"]);
@@ -81,36 +81,36 @@ public class InvoiceController {
     }    
          
      
-    @GetMapping("/invoices/{invoice_id}/invoicedetails")
+    @GetMapping("/invoices/{invoice_id}/details")
     public ResponseEntity getEntity(@PathVariable Long invoice_id )  {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "InvoiceController");
         
-        InvoiceDetailsGetDataModel wrapper = invoiceService.getEntity(["invoice_id"]);        
+        InvoiceDetailsGetDataModel wrapper = invoiceService.getEntity(invoice_id);        
         return ResponseEntity.ok().headers(headers).body(wrapper);
     }                        
 
-    @PostMapping("/invoices/{invoice_id}/invoicedetails")
+    @PostMapping("/invoices/{invoice_id}/details")
     public ResponseEntity postEntity( @RequestBody InvoiceDetailsPostDataModel body,  HttpServletRequest request) throws URISyntaxException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "InvoiceController"); 
         return ResponseEntity.created(new URI(request != null ? request.getRequestURI()  : "") ).headers(headers).body(invoiceService.postEntity(body));
     }                 
      
-    @GetMapping("/invoices/{invoice_id}/invoicedetails/{detail_id}")
+    @GetMapping("/invoices/{invoice_id}/details/{detail_id}")
     public ResponseEntity getEntity(@PathVariable Long invoice_id ,@PathVariable Long detail_id )  {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "InvoiceController");
         
-        InvoiceDetailGetDataModel wrapper = invoiceService.getEntity(["invoice_id", "detail_id"]);        
+        InvoiceDetailGetDataModel wrapper = invoiceService.getEntity(invoice_id,detail_id);        
         return ResponseEntity.ok().headers(headers).body(wrapper);
     }                            
 
-    @PutMapping("/invoices/{invoice_id}/invoicedetails/{detail_id}")
-    public ResponseEntity putEntity(@PathVariable Long ["invoice_id", "detail_id"],   @RequestBody InvoiceDetailsPutDataModel body ) {
+    @PutMapping("/invoices/{invoice_id}/details/{detail_id}")
+    public ResponseEntity putEntity(@PathVariable Long invoice_id, @PathVariable Long detail_id,   @RequestBody InvoiceDetailsPutDataModel body ) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Responded", "InvoiceController");
-        if (["invoice_id", "detail_id"] != null){
+        headers.add("Responded", "InvoiceController"); 
+        if (invoice_id != null && detail_id != null){
             
         body.getData().setInvoiceId(invoice_id);        
         body.getData().setDetailId(detail_id);        
@@ -118,8 +118,8 @@ public class InvoiceController {
         return ResponseEntity.ok().headers(headers).body(invoiceService.putEntity(body));
     }                        
 
-    @DeleteMapping("/invoices/{invoice_id}/invoicedetails/{detail_id}")
-    public ResponseEntity deleteEntity(@PathVariable Long ["invoice_id", "detail_id"] ) {
+    @DeleteMapping("/invoices/{invoice_id}/details/{detail_id}")
+    public ResponseEntity deleteEntity(@PathVariable Long invoice_id ,@PathVariable Long detail_id ) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "InvoiceController");
         invoiceService.deleteEntity(["invoice_id", "detail_id"]);

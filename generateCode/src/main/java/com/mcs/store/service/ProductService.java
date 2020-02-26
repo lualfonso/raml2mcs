@@ -12,11 +12,11 @@ import com.mcs.store.model.*;
  * @author CILALFONSO
  */
 public interface ProductService {             
-    public ProductsGetDataModel getEntity(Long []);        
+    public ProductsGetDataModel getEntity();        
     public ProductGetDataModel postEntity(ProductsPostDataModel model); 
-    public ProductGetDataModel getEntity(Long ["product_id"]);         
+    public ProductGetDataModel getEntity(Long product_id);         
     public ProductGetDataModel putEntity(ProductsPutDataModel model);
-    public void deleteEntity(Long ["product_id"]);
+    public void deleteEntity(Long {"get"=>{:request=>{:path=>["product_id"], :body=>nil}, :response=>{:code=>"ok", :object=>"ProductGetData"}}, "put"=>{:request=>{:path=>["product_id"], :body=>"ProductsPutData"}, :response=>{:code=>"ok", :object=>"ProductGetData"}}, "delete"=>{:request=>{:path=>["product_id"], :body=>nil}, :response=>{:code=>"ok", :object=>nil}}});
     
     
 

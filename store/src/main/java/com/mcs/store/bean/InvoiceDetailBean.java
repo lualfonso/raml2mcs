@@ -15,7 +15,7 @@ import java.math.BigDecimal;
 public class InvoiceDetailBean {
     
     private Long invoiceId;
-    private Long id;
+    private Long detailId;
     private Long amount;
     
 }

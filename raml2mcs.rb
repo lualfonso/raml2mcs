@@ -115,9 +115,9 @@ def get_propertyType file , type_raw ,decimal
                name_file = type_raw.split(".")[0]
                type_raw = type_raw.split(".")[1]
                attribute_dir =  Dir["#{@root_dir}/**/#{name_file.underscore}*"]
-               file =  YAML.load_file(attribute_dir[0])
+               file =  YAML.load_file (attribute_dir[0])
           end
-
+          
           next_type = file["types"][type_raw.gsub("[]","")]["type"]
           is_multipleOf = file["types"][type_raw.gsub("[]","")]["multipleOf"]
 
@@ -136,6 +136,7 @@ def get_propertyType file , type_raw ,decimal
 end
 
 def obtener_attributo file
+
      if file.include?(".")
           name_file = file.split(".")[0]
           name_attr = file.split(".")[1].gsub("[]","")
@@ -207,12 +208,12 @@ end
 def generar_javaController domains
      domains.each do |domain, props|
           @controller = props
-          @name = "#{props[:serviceName]}Controller"         
+          @name = "#{domain.gsub("/","").singularize.camelize}"         
           model_template = "#{@template_dir}/main/controller/ControllerTemplate.erb"
           templateFile = File.open(model_template)
           templateContent  = templateFile.read
           renderedTemplate = ERB.new(templateContent, nil, '-')         
-          File.open( "#{@dir_controller}/#{@name}.java" , 'w+')  { |f| f.write(renderedTemplate.result()) }
+          File.open( "#{@dir_controller}/#{@name}Controller.java" , 'w+')  { |f| f.write(renderedTemplate.result()) }
      end
 end
 
@@ -242,7 +243,8 @@ def procesar_dominio domain , resource, domains
           @entities[entity][:entity_to_model] = [] if @entities[entity][:entity_to_model].nil? 
           @entities[entity][:model_to_entity] = [] if @entities[entity][:model_to_entity].nil? 
      end
-     domains[domain] ={}
+     domains[domain] = {}
+     domains[domain]["props"] = {entity:entity.split(".").last}
      resource.each do |key, value|
           if key == "get" || key == "post" || key == "put" || key == "delete"
                if value["responses"][200]
@@ -267,7 +269,6 @@ def procesar_dominio domain , resource, domains
                     path.push path_string
                     domain_to_analyze = domain_to_analyze.gsub("{#{path_string}}","") 
                end
-               p path
                body_file = value["body"][@media_type]["type"] unless value["body"].nil?
                body = body_file.split(".")[1] unless value["body"].nil?
                domains[domain][key] = { request:{ path:path ,body:body } , response: {code: code, object: object}}
@@ -299,7 +300,7 @@ def cargar_dominios
                item_aux = item.gsub("{","").gsub("}","")
                service_name += item_aux.camelize
           end
-          @domains[domain] = {serviceName:entity["name"].split(".")[1]}
+          @domains[domain] = {}
           @domains[domain] = procesar_dominio domain,resource,@domains[domain]
      end
      generar_javaEntity @entities
@@ -343,10 +344,12 @@ def generar_javaEntity entities
           @entity_insert = {}
           @entity_struc = {}
           @entity_join =  {}
-
+          @pk = []
+          @identity = ""
           attribute_raml["types"][@name_attr]["properties"].each do |property, value|
                if value["(pk)"]
-                    @identity = property unless value["(pk)"]["identity"].nil?
+                    @pk.push property
+                    @identity = property if value["(pk)"]["identity"]
                end
                type_raw = value["type"]
                type = get_propertyType attribute_raml, type_raw,value["multipleOf"]
@@ -381,7 +384,7 @@ def generar_javaEntity entities
           @fields = fields
           @joins = join
 
-          @script_db[@name_attr]={struc:@entity_struc,identity:@identity}
+          @script_db[@name_attr]={struc:@entity_struc,identity:@identity,pk:@pk}
           entity_template = "#{@template_dir}/main/bean/EntityTemplate.erb"
           templateFile = File.open(entity_template)
           templateContent  = templateFile.read

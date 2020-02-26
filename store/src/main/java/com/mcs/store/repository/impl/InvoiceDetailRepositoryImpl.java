@@ -19,60 +19,59 @@ import com.mcs.store.repository.InvoiceDetailRepository;
  */
 @Repository
 public class InvoiceDetailRepositoryImpl implements InvoiceDetailRepository {
-
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
     @Override
     public int count() {
-        return jdbcTemplate.queryForObject("select count(*) from invoicedetail", Integer.class);
+        return jdbcTemplate.queryForObject("select count(*) from invoice_detail", Integer.class);
     }
 
     @Override
     public int save(InvoiceDetailBean entity) {
         return jdbcTemplate.update(
-                "insert into invoicedetail ( invoice_id, amount) values(?,?)",
-                 entity.getInvoiceId(), entity.getAmount());
+                "insert into invoice_detail ( invoice_id, detail_id, amount) values(?,?,?)",
+                 entity.getInvoiceId(), entity.getDetailId(), entity.getAmount());
     }
 
     @Override
     public int update(InvoiceDetailBean entity) {
         return jdbcTemplate.update(
-                "update invoicedetail set invoice_id= ? ,amount= ?  where id  = ?  ",
-                  entity.getInvoiceId(),   entity.getAmount(), entity.getId());
+                "update invoice_detail set amount= ? where invoice_id = ? and detail_id = ?",
+                entity.getAmount(), entity.getInvoiceId(), entity.getDetailId());
     }
 
     @Override
-    public int deleteById(Long id) {
+    public int deleteById(Long invoice_id, Long detail_id) {
         return jdbcTemplate.update(
-                "delete from invoicedetail where id = ?",
-                id);
+                "delete from invoicedetail where invoice_id = ? and detail_id = ?",
+                invoice_id, detail_id);
     }
-
+    
     @Override
-    public List<InvoiceDetailBean> findAll() {
+    public List<InvoiceDetailBean> findAll(Long invoice_id) {
         return jdbcTemplate.query(
-                "select invoice.id as invoice_id , invoice_detail.id as id , invoice_detail.amount as amount   from invoicedetail  left join invoice on invoice_detail.invoice_id=invoice.id ",
+                "select invoice.invoice_id as invoice_id , invoice_detail.detail_id as detail_id , invoice_detail.amount as amount  from invoice_detail left join invoice on invoice_detail.invoice_id=invoice.invoice_id where invoice_detail.invoice_id = ? ",
+                new Object[]{invoice_id},
                 (rs, rowNum) ->
                         new InvoiceDetailBean(
                               rs.getLong("invoice_id"),
-                              rs.getLong("id"),
+                              rs.getLong("detail_id"),
                               rs.getLong("amount")
                             )
         );
     }
 
     @Override
-    public Optional<InvoiceDetailBean> findById(Long id) {
+    public Optional<InvoiceDetailBean> findById(Long invoice_id, Long detail_id) {
         return jdbcTemplate.queryForObject(
-                "select invoice.id as invoice_id , invoice_detail.id as id , invoice_detail.amount as amount  from invoicedetail  left join invoice on invoice_detail.invoice_id=invoice.id where  invoicedetail.id = ?",
-                new Object[]{id},
+                "select invoice.invoice_id as invoice_id , invoice_detail.detail_id as detail_id , invoice_detail.amount as amount  from invoice_detail  left join invoice on invoice_detail.invoice_id=invoice.invoice_id where invoice_detail.invoice_id = ?  and invoice_detail.detail_id = ? ",
+                new Object[]{invoice_id, detail_id},
                 (rs, rowNum) ->
                         Optional.of(new InvoiceDetailBean(
                               rs.getLong("invoice_id"),
-                              rs.getLong("id"),
+                              rs.getLong("detail_id"),
                               rs.getLong("amount")
                             ))
         );

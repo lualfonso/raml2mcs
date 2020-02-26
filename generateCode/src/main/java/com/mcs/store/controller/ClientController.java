@@ -40,7 +40,7 @@ public class ClientController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "ClientController");
         
-        ClientsGetDataModel wrapper = clientService.getEntity([]);        
+        ClientsGetDataModel wrapper = clientService.getEntity();        
         return ResponseEntity.ok().headers(headers).body(wrapper);
     }                        
 
@@ -56,15 +56,15 @@ public class ClientController {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "ClientController");
         
-        ClientGetDataModel wrapper = clientService.getEntity(["client_id"]);        
+        ClientGetDataModel wrapper = clientService.getEntity(client_id);        
         return ResponseEntity.ok().headers(headers).body(wrapper);
     }                            
 
     @PutMapping("/clients/{client_id}")
-    public ResponseEntity putEntity(@PathVariable Long ["client_id"],   @RequestBody ClientsPutDataModel body ) {
+    public ResponseEntity putEntity(@PathVariable Long client_id,   @RequestBody ClientsPutDataModel body ) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Responded", "ClientController");
-        if (["client_id"] != null){
+        headers.add("Responded", "ClientController"); 
+        if (client_id != null){
             
         body.getData().setClientId(client_id);        
         }
@@ -72,7 +72,7 @@ public class ClientController {
     }                        
 
     @DeleteMapping("/clients/{client_id}")
-    public ResponseEntity deleteEntity(@PathVariable Long ["client_id"] ) {
+    public ResponseEntity deleteEntity(@PathVariable Long client_id ) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "ClientController");
         clientService.deleteEntity(["client_id"]);

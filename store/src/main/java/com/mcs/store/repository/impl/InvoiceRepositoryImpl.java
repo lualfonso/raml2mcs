@@ -19,9 +19,7 @@ import com.mcs.store.repository.InvoiceRepository;
  */
 @Repository
 public class InvoiceRepositoryImpl implements InvoiceRepository {
-
-    @Autowired
-    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -33,31 +31,32 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
     @Override
     public int save(InvoiceBean entity) {
         return jdbcTemplate.update(
-                "insert into invoice ( date, client) values(?,?)",
-                 entity.getDate(), entity.getClient());
+                "insert into invoice ( invoice_id, date, client) values(?,?,?)",
+                 entity.getInvoiceId(), entity.getDate(), entity.getClient());
     }
 
     @Override
     public int update(InvoiceBean entity) {
         return jdbcTemplate.update(
-                "update invoice set date= ? ,client= ?  where id  = ?  ",
-                   entity.getDate(),  entity.getClient(), entity.getId());
+                "update invoice set date= ?, client= ? where invoice_id = ?",
+                entity.getDate(),entity.getClient(), entity.getInvoiceId());
     }
 
     @Override
-    public int deleteById(Long id) {
+    public int deleteById(Long invoice_id) {
         return jdbcTemplate.update(
-                "delete from invoice where id = ?",
-                id);
+                "delete from invoice where invoice_id = ?",
+                invoice_id);
     }
-
+    
     @Override
     public List<InvoiceBean> findAll() {
         return jdbcTemplate.query(
-                "select invoice.id as id , invoice.date as date , client.id as client   from invoice  left join client on invoice.client=client.id ",
+                "select invoice.invoice_id as invoice_id , invoice.date as date , client.client_id as client  from invoice left join client on invoice.client=client.client_id",
+                
                 (rs, rowNum) ->
                         new InvoiceBean(
-                              rs.getLong("id"),
+                              rs.getLong("invoice_id"),
                               rs.getDate("date"),
                               rs.getLong("client")
                             )
@@ -65,13 +64,13 @@ public class InvoiceRepositoryImpl implements InvoiceRepository {
     }
 
     @Override
-    public Optional<InvoiceBean> findById(Long id) {
+    public Optional<InvoiceBean> findById(Long invoice_id) {
         return jdbcTemplate.queryForObject(
-                "select invoice.id as id , invoice.date as date , client.id as client  from invoice  left join client on invoice.client=client.id where  invoice.id = ?",
-                new Object[]{id},
+                "select invoice.invoice_id as invoice_id , invoice.date as date , client.client_id as client  from invoice  left join client on invoice.client=client.client_id where invoice.invoice_id = ? ",
+                new Object[]{invoice_id},
                 (rs, rowNum) ->
                         Optional.of(new InvoiceBean(
-                              rs.getLong("id"),
+                              rs.getLong("invoice_id"),
                               rs.getDate("date"),
                               rs.getLong("client")
                             ))
