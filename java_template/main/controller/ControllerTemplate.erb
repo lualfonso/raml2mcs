@@ -57,7 +57,7 @@ public class <%= @name %>Controller {
         headers.add("Responded", "<%= @name %>");<% if !values[:request][:path].nil? %> 
         if (<% values[:request][:path].each_with_index do |(path), index| %><%=path%> != null<% if index != values[:request][:path].size - 1 %> && <% end %><% end %>){
             <% values[:request][:path].each do |path| %>
-        body.getData().set<%= path.camelize %>(<%= path %>);        <% end %>
+        body.getData().set<%= path.camelize.gsub(props["props"][:entity].camelize,"") %>(<%= path %>);        <% end %>
         }<% end %>
         return ResponseEntity.<%= values[:response][:code] %>().headers(headers).body(<%= @name.downcase %>Service.put<%= props["props"][:entity].camelize %>(body));
     }    <% end -%>    <% if method == "delete" %>

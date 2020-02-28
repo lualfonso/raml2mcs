@@ -283,7 +283,7 @@
 				"header":[],
 				
 				"url": {
-					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{detail_id}",
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{invoice_detail_id}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -291,7 +291,7 @@
 					"port": "8080",
 					"path": [
 						"v1",
-						"invoices/{invoice_id}/details/{detail_id}"
+						"invoices/{invoice_id}/details/{invoice_detail_id}"
 					]
 				}
 			},
@@ -305,7 +305,7 @@
 				"header":[],
 				
 				"url": {
-					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{detail_id}",
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{invoice_detail_id}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -313,7 +313,7 @@
 					"port": "8080",
 					"path": [
 						"v1",
-						"invoices/{invoice_id}/details/{detail_id}"
+						"invoices/{invoice_id}/details/{invoice_detail_id}"
 					]
 				}
 			},
@@ -342,7 +342,7 @@
 					}
 				},
 				"url": {
-					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{detail_id}",
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{invoice_detail_id}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -350,7 +350,7 @@
 					"port": "8080",
 					"path": [
 						"v1",
-						"invoices/{invoice_id}/details/{detail_id}"
+						"invoices/{invoice_id}/details/{invoice_detail_id}"
 					]
 				}
 			},
@@ -364,7 +364,7 @@
 				"header":[],
 				
 				"url": {
-					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{detail_id}",
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{invoice_detail_id}",
 					"protocol": "http",
 					"host": [
 						"localhost"
@@ -372,7 +372,7 @@
 					"port": "8080",
 					"path": [
 						"v1",
-						"invoices/{invoice_id}/details/{detail_id}"
+						"invoices/{invoice_id}/details/{invoice_detail_id}"
 					]
 				}
 			},

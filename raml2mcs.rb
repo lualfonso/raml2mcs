@@ -35,7 +35,7 @@ package = "#{group}.#{@project}"
 @script_db = {}
 p @dir_main
 
-FileUtils.remove_dir(@dir_root) unless !Dir.exists?(@dir_root)
+FileUtils.remove_dir(@dir_root,true) unless !Dir.exists?(@dir_root)
 FileUtils.mkdir_p(@dir_root)
 FileUtils.mkdir_p(@dir_main) unless Dir.exists?(@dir_main)
 FileUtils.mkdir_p(@dir_resource) unless Dir.exists?(@dir_resource)
@@ -117,7 +117,6 @@ def get_propertyType file , type_raw ,decimal
                attribute_dir =  Dir["#{@root_dir}/**/#{name_file.underscore}*"]
                file =  YAML.load_file (attribute_dir[0])
           end
-          
           next_type = file["types"][type_raw.gsub("[]","")]["type"]
           is_multipleOf = file["types"][type_raw.gsub("[]","")]["multipleOf"]
 
@@ -235,9 +234,9 @@ def generar_javaAppInit
 end
 
 def procesar_dominio domain , resource, domains
-    
+     p domain
      entity = resource["(table)"]["name"] unless resource["(table)"].nil?
-
+     p entity
      if !entity.nil?
           @entities[entity] = {} if @entities[entity].nil? 
           @entities[entity][:entity_to_model] = [] if @entities[entity][:entity_to_model].nil? 
@@ -425,8 +424,8 @@ def generar_javaConverter converter_name, entity_to_model, model_to_entity
                name = value["type"].gsub("[]","")
                @entity_to_model_struc[name] = {}
                 attribute_raml["types"][name]["properties"].each do |property, value|
-                    type = value["type"].split(".")[1].underscore
-                    type = type.split("_").last
+                    type = value["type"].split(".").last.underscore
+                    type = (type.camelize.gsub(converter_name.camelize,"")).underscore
                     @entity_to_model_struc[name][property] = { name: property.camelize.gsub("?",""), type: @entity_struc[type][:name] }  unless @entity_struc[type].nil?
                end
           end
@@ -438,14 +437,14 @@ def generar_javaConverter converter_name, entity_to_model, model_to_entity
           name_model = model_file.split(".")[1]
           attribute_dir =  @raml["uses"][name_file].sub(".", @root_dir)
           attribute_raml =  YAML.load_file(attribute_dir)
-        
+
           attribute_raml["types"][name_model]["properties"].each do |property, value|
                name = value["type"].gsub("[]","")
                @model_to_entity_struc[name] = {}
                
                attribute_raml["types"][name]["properties"].each do |property, value|
-                    type = value["type"].split(".")[1].underscore
-                    type = type.split("_").last
+                    type = value["type"].split(".").last.underscore
+                    type = (type.camelize.gsub(converter_name.camelize,"")).underscore
                     @model_to_entity_struc[name][property] = { name: property.camelize.gsub("?",""), type: @entity_struc[type][:name] } unless @entity_struc[type].nil? 
                end
           end
