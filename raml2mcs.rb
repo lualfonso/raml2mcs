@@ -35,7 +35,7 @@ package = "#{group}.#{@project}"
 @script_db = {}
 p @dir_main
 
-FileUtils.remove_dir(@dir_root) unless !Dir.exists?(@dir_root)
+FileUtils.remove_dir(@dir_root,true) unless !Dir.exists?(@dir_root)
 FileUtils.mkdir_p(@dir_root)
 FileUtils.mkdir_p(@dir_main) unless Dir.exists?(@dir_main)
 FileUtils.mkdir_p(@dir_resource) unless Dir.exists?(@dir_resource)
@@ -83,8 +83,6 @@ def calcular_modelos dir
      end 
      models_enums.each do |key, value|
           attributos  = {}
-         # attributos = calcular_attributos(value)
-          #generar_javaModel(key,attributos) 
       end
 end
 
@@ -117,10 +115,13 @@ def get_propertyType file , type_raw ,decimal
                name_file = type_raw.split(".")[0]
                type_raw = type_raw.split(".")[1]
                attribute_dir =  Dir["#{@root_dir}/**/#{name_file.underscore}*"]
-               file =  YAML.load_file(attribute_dir[0])
+               file =  YAML.load_file (attribute_dir[0])
           end
-          if !file["types"][type_raw.gsub("[]","")]["type"].nil?
-               type = get_propertyType file,file["types"][type_raw.gsub("[]","")]["type"],file["types"][type_raw.gsub("[]","")]["multipleOf"]
+          next_type = file["types"][type_raw.gsub("[]","")]["type"]
+          is_multipleOf = file["types"][type_raw.gsub("[]","")]["multipleOf"]
+
+          if !next_type.nil? && next_type!="object"
+               type = get_propertyType file, next_type, is_multipleOf
           else
                if type_raw.include?"[]"
                     type = "List<#{type_raw.gsub("[]","") }>"
@@ -134,6 +135,7 @@ def get_propertyType file , type_raw ,decimal
 end
 
 def obtener_attributo file
+
      if file.include?(".")
           name_file = file.split(".")[0]
           name_attr = file.split(".")[1].gsub("[]","")
@@ -205,12 +207,12 @@ end
 def generar_javaController domains
      domains.each do |domain, props|
           @controller = props
-          @name = "#{props[:serviceName]}Controller"         
+          @name = "#{domain.gsub("/","").singularize.camelize}"         
           model_template = "#{@template_dir}/main/controller/ControllerTemplate.erb"
           templateFile = File.open(model_template)
           templateContent  = templateFile.read
           renderedTemplate = ERB.new(templateContent, nil, '-')         
-          File.open( "#{@dir_controller}/#{@name}.java" , 'w+')  { |f| f.write(renderedTemplate.result()) }
+          File.open( "#{@dir_controller}/#{@name}Controller.java" , 'w+')  { |f| f.write(renderedTemplate.result()) }
      end
 end
 
@@ -232,15 +234,16 @@ def generar_javaAppInit
 end
 
 def procesar_dominio domain , resource, domains
-    
-      entity = resource["(entity)"] unless resource["(entity)"].nil?
-
+     p domain
+     entity = resource["(table)"]["name"] unless resource["(table)"].nil?
+     p entity
      if !entity.nil?
           @entities[entity] = {} if @entities[entity].nil? 
           @entities[entity][:entity_to_model] = [] if @entities[entity][:entity_to_model].nil? 
           @entities[entity][:model_to_entity] = [] if @entities[entity][:model_to_entity].nil? 
      end
-     domains[domain] ={}
+     domains[domain] = {}
+     domains[domain]["props"] = {entity:entity.split(".").last}
      resource.each do |key, value|
           if key == "get" || key == "post" || key == "put" || key == "delete"
                if value["responses"][200]
@@ -258,8 +261,13 @@ def procesar_dominio domain , resource, domains
                     object_file = value["responses"][202]["body"][@media_type]["type"] unless  value["responses"][202]["body"].nil?
                     object = object_file.split(".")[1] unless  value["responses"][202]["body"].nil?
                end   
-
-               path = domain.str_between("{","}")
+               domain_to_analyze = domain
+               path = []
+               until domain_to_analyze.str_between("{","}").nil?
+                    path_string = domain_to_analyze.str_between("{","}")
+                    path.push path_string
+                    domain_to_analyze = domain_to_analyze.gsub("{#{path_string}}","") 
+               end
                body_file = value["body"][@media_type]["type"] unless value["body"].nil?
                body = body_file.split(".")[1] unless value["body"].nil?
                domains[domain][key] = { request:{ path:path ,body:body } , response: {code: code, object: object}}
@@ -270,8 +278,8 @@ def procesar_dominio domain , resource, domains
           end    
      end 
      resources = resource.select {|property| property.start_with?"/" }
-     resources.each do |domain_Recursive, resource_recursive|
-          domain += domain_Recursive
+     resources.each do |domain_recursive, resource_recursive|
+          domain += domain_recursive
           domains = procesar_dominio domain,resource_recursive, domains
      end 
      domains
@@ -283,7 +291,7 @@ def cargar_dominios
      @entity_to_model ={}
      @model_to_entity ={}
      @resourses.select do |domain, resource|
-          entity = resource["(entity)"] unless resource["(entity)"].nil?
+          entity = resource["(table)"] unless resource["(table)"].nil?
           domain_aux = domain.sub("/","") if domain.start_with?("/")        
           domain_array = domain_aux.split("/")
           service_name = ""
@@ -291,7 +299,7 @@ def cargar_dominios
                item_aux = item.gsub("{","").gsub("}","")
                service_name += item_aux.camelize
           end
-          @domains[domain] = {serviceName:entity.split(".")[1]}
+          @domains[domain] = {}
           @domains[domain] = procesar_dominio domain,resource,@domains[domain]
      end
      generar_javaEntity @entities
@@ -302,6 +310,7 @@ end
 def generar_javaService name
           @service_name = name
           @domains.select{|key| key.include?name.pluralize.downcase}.each do |domain,props| 
+          
                @service_props = props
                service_template = "#{@template_dir}/main/service/TemplateService.erb"
                templateFile = File.open(service_template)
@@ -322,7 +331,8 @@ end
 def is_pk reference
      attribute_dir =  Dir["#{@root_dir}/**/base.raml*"]
      attribute_raml =  YAML.load_file(attribute_dir[0])
-     attribute_raml["types"][reference["entity"]]["properties"][reference["field"]]["(identity)"]
+
+     attribute_raml["types"][reference["table"].camelize]["properties"][reference["column"]]["(pk)"]
 end
 def generar_javaEntity entities
      entities.each do |name,props|
@@ -333,16 +343,20 @@ def generar_javaEntity entities
           @entity_insert = {}
           @entity_struc = {}
           @entity_join =  {}
-          
+          @pk = []
+          @identity = ""
           attribute_raml["types"][@name_attr]["properties"].each do |property, value|
-               @identity = property if value["(identity)"]
+               if value["(pk)"]
+                    @pk.push property
+                    @identity = property if value["(pk)"]["identity"]
+               end
                type_raw = value["type"]
                type = get_propertyType attribute_raml, type_raw,value["multipleOf"]
                property = property.gsub("?","")
-               if value["(reference)"]
-                    @entity_join[value["(reference)"]["entity"]] = [] if  @entity_join[value["(reference)"]["entity"]].nil?
-                    @entity_join[value["(reference)"]["entity"]].push({field:value["(reference)"], match:property})
-                    @entity_insert[property] = { name: property.camelize, type: type } if is_pk(value["(reference)"])
+               if value["(fk)"]
+                    @entity_join[value["(fk)"]["table"]] = [] if  @entity_join[value["(fk)"]["table"]].nil?
+                    @entity_join[value["(fk)"]["table"]].push({field:value["(fk)"], match:"#{@name_attr.underscore}.#{property}"})
+                    @entity_insert[property] = { name: property.camelize, type: type } if is_pk(value["(fk)"])
                else
                     @entity_insert[property] = { name: property.camelize, type: type } 
                end     
@@ -350,7 +364,7 @@ def generar_javaEntity entities
           end
           fields = ""
           @entity_struc.each_with_index do |(key, type),index|
-                    fields = fields + "#{key.to_s} as #{key.to_s} "
+                    fields = fields + "#{@name_attr.underscore}.#{key.to_s} as #{key.to_s} "
                     if index != @entity_struc.size - 1
                          fields = fields + ", "
                     else
@@ -361,15 +375,15 @@ def generar_javaEntity entities
           @entity_join.each do |table,props|
                join = join + " left join #{table.underscore}"
                props.each do |prop|
-                    fields = fields.gsub("#{prop[:match]} as","#{prop[:field]['field']} as")
-                   join = join + " on #{@name_attr.downcase}.#{prop[:match]}=#{table.underscore}.#{prop[:field]['field']}" if  is_pk(prop[:field])
+                    fields = fields.gsub("#{prop[:match]} as","#{prop[:field]["table"]}.#{prop[:field]['column']} as")
+                   join = join + " on #{prop[:match]}=#{table.underscore}.#{prop[:field]['column']}" if  is_pk(prop[:field])
                end
 
           end
           @fields = fields
           @joins = join
 
-          @script_db[@name_attr]={struc:@entity_struc,identity:@identity}
+          @script_db[@name_attr]={struc:@entity_struc,identity:@identity,pk:@pk}
           entity_template = "#{@template_dir}/main/bean/EntityTemplate.erb"
           templateFile = File.open(entity_template)
           templateContent  = templateFile.read
@@ -406,12 +420,12 @@ def generar_javaConverter converter_name, entity_to_model, model_to_entity
           name_model = model_file.split(".")[1]
           attribute_dir =  @raml["uses"][name_file].sub(".", @root_dir)
           attribute_raml =  YAML.load_file(attribute_dir)
-
           attribute_raml["types"][name_model]["properties"].each do |property, value|
-                name = value["type"].gsub("[]","")
+               name = value["type"].gsub("[]","")
                @entity_to_model_struc[name] = {}
                 attribute_raml["types"][name]["properties"].each do |property, value|
-                    type = value["type"].split(".")[1].underscore
+                    type = value["type"].split(".").last.underscore
+                    type = (type.camelize.gsub(converter_name.camelize,"")).underscore
                     @entity_to_model_struc[name][property] = { name: property.camelize.gsub("?",""), type: @entity_struc[type][:name] }  unless @entity_struc[type].nil?
                end
           end
@@ -423,14 +437,14 @@ def generar_javaConverter converter_name, entity_to_model, model_to_entity
           name_model = model_file.split(".")[1]
           attribute_dir =  @raml["uses"][name_file].sub(".", @root_dir)
           attribute_raml =  YAML.load_file(attribute_dir)
-        
+
           attribute_raml["types"][name_model]["properties"].each do |property, value|
                name = value["type"].gsub("[]","")
                @model_to_entity_struc[name] = {}
                
                attribute_raml["types"][name]["properties"].each do |property, value|
-                    type = value["type"].split(".")[1].underscore
-
+                    type = value["type"].split(".").last.underscore
+                    type = (type.camelize.gsub(converter_name.camelize,"")).underscore
                     @model_to_entity_struc[name][property] = { name: property.camelize.gsub("?",""), type: @entity_struc[type][:name] } unless @entity_struc[type].nil? 
                end
           end

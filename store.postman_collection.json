@@ -1,0 +1,757 @@
+{
+	"info": {
+		"_postman_id": "684d51e2-4246-443c-9ce1-e6dbb8c87ea2",
+		"name": "templateCollections",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+	
+	
+		
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "props",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "get",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "post",
+				"header":[ 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices"
+					]
+				}
+			},
+			"response": []
+		}	 
+	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "props",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "get",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "put",
+				"header":[ 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "delete",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}"
+					]
+				}
+			},
+			"response": []
+		}	 
+	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "props",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}/details"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "get",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}/details"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "post",
+				"header":[ 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}/details"
+					]
+				}
+			},
+			"response": []
+		}	 
+	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "props",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{invoice_detail_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}/details/{invoice_detail_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "get",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{invoice_detail_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}/details/{invoice_detail_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "put",
+				"header":[ 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{invoice_detail_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}/details/{invoice_detail_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/invoices",
+			"request": {
+				"method": "delete",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/invoices/{invoice_id}/details/{invoice_detail_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"invoices/{invoice_id}/details/{invoice_detail_id}"
+					]
+				}
+			},
+			"response": []
+		}	  
+	
+	
+		,
+		{
+			"name": "/products",
+			"request": {
+				"method": "props",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"products"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/products",
+			"request": {
+				"method": "get",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"products"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/products",
+			"request": {
+				"method": "post",
+				"header":[ 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"products"
+					]
+				}
+			},
+			"response": []
+		}	 
+	
+		,
+		{
+			"name": "/products",
+			"request": {
+				"method": "props",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/products/{product_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"products/{product_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/products",
+			"request": {
+				"method": "get",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/products/{product_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"products/{product_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/products",
+			"request": {
+				"method": "put",
+				"header":[ 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/products/{product_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"products/{product_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/products",
+			"request": {
+				"method": "delete",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/products/{product_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"products/{product_id}"
+					]
+				}
+			},
+			"response": []
+		}	  
+	
+	
+		,
+		{
+			"name": "/clients",
+			"request": {
+				"method": "props",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/clients",
+			"request": {
+				"method": "get",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/clients",
+			"request": {
+				"method": "post",
+				"header":[ 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/clients",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		}	 
+	
+		,
+		{
+			"name": "/clients",
+			"request": {
+				"method": "props",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/clients/{client_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"clients/{client_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/clients",
+			"request": {
+				"method": "get",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/clients/{client_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"clients/{client_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/clients",
+			"request": {
+				"method": "put",
+				"header":[ 
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"data\":\"\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8080/v1/clients/{client_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"clients/{client_id}"
+					]
+				}
+			},
+			"response": []
+		}	
+		,
+		{
+			"name": "/clients",
+			"request": {
+				"method": "delete",
+				"header":[],
+				
+				"url": {
+					"raw": "http://localhost:8080/v1/clients/{client_id}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"v1",
+						"clients/{client_id}"
+					]
+				}
+			},
+			"response": []
+		}	  
+	],
+	"protocolProfileBehavior": {}
+}

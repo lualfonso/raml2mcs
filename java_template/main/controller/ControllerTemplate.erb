@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import <%= package %>.model.*;
-import <%= package %>.service.<%= @controller[:serviceName] %>Service;
-
+import <%= package %>.service.<%= @name %>Service;
 
 /**
  *
@@ -30,43 +29,44 @@ import <%= package %>.service.<%= @controller[:serviceName] %>Service;
  */
 @RestController
 @RequestMapping("<%= @version %>")
-public class <%= @name %> {
+public class <%= @name %>Controller {
     @Autowired
-    private <%= @controller[:serviceName] %>Service <%= @controller[:serviceName].downcase %>Service;
-    <% @controller.select{|key,value| value.is_a?Hash }.each do |domain, props| %>
+    private <%=  @name%>Service <%= @name.downcase %>Service;
+    <% @controller.each do |domain, props| %>
     <% props.each do |method, values| %><% if method == "get" %> 
     @GetMapping("<%= domain %>")
-    public ResponseEntity getEntity(<% if !values[:request][:path].nil?  %>@PathVariable Long <%= values[:request][:path] %> <% end %>)  {
+    public ResponseEntity get<%= props["props"][:entity].camelize %>(<% if !values[:request][:path].nil?  %><% values[:request][:path].each_with_index do |(path), index| %>@PathVariable Long <%= path %> <% if index != values[:request][:path].size - 1 %>,<% end %><% end %><% end %>)  {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "<%= @name %>");
-        <% if values[:request][:path].nil? %>
-        <%= values[:response][:object] %>Model wrapper = <%= @controller[:serviceName].downcase %>Service.getEntities();        <% else %>
-        <%= values[:response][:object] %>Model wrapper = <%= @controller[:serviceName].downcase %>Service.getEntity(<%= values[:request][:path] %>);        <% end %>
+        <% if !domain.end_with?("{#{values[:request][:path].last}}") %>
+        <%= values[:response][:object] %>Model wrapper = <%= @name.downcase %>Service.get<%= props["props"][:entity].pluralize.camelize %>(<% values[:request][:path].each_with_index do |(path), index| %><%= path %><% if index != values[:request][:path].size - 1 %>,<% end %><% end %>);        <% else %>
+        <%= values[:response][:object] %>Model wrapper = <%= @name.downcase %>Service.get<%= props["props"][:entity].camelize %>(<% values[:request][:path].each_with_index do |(path), index| %><%= path %><% if index != values[:request][:path].size - 1 %>,<% end %><% end %>);        <% end %>
         return ResponseEntity.<%= values[:response][:code] %>().headers(headers).body(wrapper);
     }    <% end %>    <% if method == "post" %>
 
     @PostMapping("<%= domain %>")
-    public ResponseEntity postEntity(<% if !values[:request][:body].nil?  %> @RequestBody <%= values[:request][:body] %>Model body, <% end %> HttpServletRequest request) throws URISyntaxException {
+    public ResponseEntity post<%= props["props"][:entity].camelize %>(<% if !values[:request][:body].nil?  %> @RequestBody <%= values[:request][:body] %>Model body, <% end %> HttpServletRequest request) throws URISyntaxException {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "<%= @name %>"); 
-        return ResponseEntity.created(new URI(request != null ? request.getRequestURI()  : "") ).headers(headers).body(<%= @controller[:serviceName].downcase %>Service.postEntity(body));
+        return ResponseEntity.created(new URI(request != null ? request.getRequestURI()  : "") ).headers(headers).body(<%= @name.downcase %>Service.post<%= props["props"][:entity].camelize %>(body));
     }    <% end %>    <% if method == "put" %>
 
     @PutMapping("<%= domain %>")
-    public ResponseEntity putEntity(<% if !values[:request][:path].nil?  %>@PathVariable Long <%= values[:request][:path] %>, <% end %> <% if !values[:request][:body].nil?  %> @RequestBody <%= values[:request][:body] %>Model body <% end %>) {
+    public ResponseEntity put<%= props["props"][:entity].camelize %>(<% if !values[:request][:path].nil?  %><% values[:request][:path].each do |path| %>@PathVariable Long <%=path %>, <% end %><% end %> <% if !values[:request][:body].nil?  %> @RequestBody <%= values[:request][:body] %>Model body <% end %>) {
         HttpHeaders headers = new HttpHeaders();
-        headers.add("Responded", "<%= @name %>");
-        <% if !values[:request][:path].nil? %>if (<%=values[:request][:path]%> != null){
-        body.getData().set<%= values[:request][:path].camelize %>(<%= values[:request][:path] %>);
+        headers.add("Responded", "<%= @name %>");<% if !values[:request][:path].nil? %> 
+        if (<% values[:request][:path].each_with_index do |(path), index| %><%=path%> != null<% if index != values[:request][:path].size - 1 %> && <% end %><% end %>){
+            <% values[:request][:path].each do |path| %>
+        body.getData().set<%= path.camelize.gsub(props["props"][:entity].camelize,"") %>(<%= path %>);        <% end %>
         }<% end %>
-        return ResponseEntity.<%= values[:response][:code] %>().headers(headers).body(<%= @controller[:serviceName].downcase %>Service.putEntity(body));
+        return ResponseEntity.<%= values[:response][:code] %>().headers(headers).body(<%= @name.downcase %>Service.put<%= props["props"][:entity].camelize %>(body));
     }    <% end -%>    <% if method == "delete" %>
 
     @DeleteMapping("<%= domain %>")
-    public ResponseEntity deleteEntity(<% if !values[:request][:path].nil?  %>@PathVariable Long <%= values[:request][:path] %> <% end %>) {
+    public ResponseEntity delete<%= props["props"][:entity].camelize %>(<%if !values[:request][:path].nil?%><% values[:request][:path].each_with_index do |(path), index| %>@PathVariable Long <%= path %> <% if index != values[:request][:path].size - 1 %>,<% end %><% end %><% end %>) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Responded", "<%= @name %>");
-        <%= @controller[:serviceName].downcase %>Service.deleteEntity(<%= values[:request][:path] %>);
+        <%= @name.downcase %>Service.delete<%= props["props"][:entity].camelize %>(<%if !values[:request][:path].nil?%><% values[:request][:path].each_with_index do |(path), index| %><%= path %><% if index != values[:request][:path].size - 1 %>, <% end %><% end %><% end %>);
         return ResponseEntity.<%= values[:response][:code] %>().headers(headers).build();
         
     }    
