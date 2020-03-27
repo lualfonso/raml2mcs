@@ -23,7 +23,7 @@ import java.util.List;<% break %><% end %><% end %>
 @NoArgsConstructor
 public class <%= @name %>Model {
     <% @attributes.each do |value, type| %>    
-    @JsonProperty("<%= value.underscore %>") <% if type[:type].include?"[]" -%>
+    @JsonProperty("<%= value.underscore %>") <% if type[:type].include?"[]" %>
     private List<<%= type[:type].gsub("[]","" ) %>> <%= value.camelize(:lower) %>;     <% else -%>  
     private <%= type[:type] %> <%= value.camelize(:lower) %>; <% end %>    <% end %>
 }

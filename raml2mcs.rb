@@ -33,7 +33,7 @@ p @raml["(project)"]
 package = "#{group}.#{@project}"
 @dir_main = "#{@dir_root}/src/main/java/#{package.gsub('.','/')}"
 @script_db = {}
-p @dir_main
+
 
 FileUtils.remove_dir(@dir_root,true) unless !Dir.exists?(@dir_root)
 FileUtils.mkdir_p(@dir_root)
@@ -112,11 +112,13 @@ def get_propertyType file , type_raw ,decimal
           type = "Date"
      else  
           if type_raw.include?"."
+               p name_file
                name_file = type_raw.split(".")[0]
                type_raw = type_raw.split(".")[1]
                attribute_dir =  Dir["#{@root_dir}/**/#{name_file.underscore}*"]
                file =  YAML.load_file (attribute_dir[0])
           end
+          p type_raw.gsub("[]","")
           next_type = file["types"][type_raw.gsub("[]","")]["type"]
           is_multipleOf = file["types"][type_raw.gsub("[]","")]["multipleOf"]
 
@@ -173,8 +175,9 @@ def generar_PostmanColletion
         model_template = "#{@template_dir}/templateCollections.postman_collection.erb"
         templateFile = File.open(model_template)
         templateContent  = templateFile.read
-        renderedTemplate = ERB.new(templateContent, nil, '-')         
-        File.open( "#{@project}.postman_collection.json" , 'w+')  { |f| f.write(renderedTemplate.result()) }
+        renderedTemplate = ERB.new(templateContent, nil, '-')    
+        FileUtils.mkdir_p("postman") unless Dir.exists?("postman")     
+        File.open( "postman/#{@project}.postman_collection.json" , 'w+')  { |f| f.write(renderedTemplate.result()) }
 end
 
 def generar_pom
@@ -234,9 +237,7 @@ def generar_javaAppInit
 end
 
 def procesar_dominio domain , resource, domains
-     p domain
      entity = resource["(table)"]["name"] unless resource["(table)"].nil?
-     p entity
      if !entity.nil?
           @entities[entity] = {} if @entities[entity].nil? 
           @entities[entity][:entity_to_model] = [] if @entities[entity][:entity_to_model].nil? 
@@ -307,10 +308,10 @@ def cargar_dominios
 end
 
 
+
 def generar_javaService name
           @service_name = name
-          @domains.select{|key| key.include?name.pluralize.downcase}.each do |domain,props| 
-          
+          @domains.select{|key| key.include?name.pluralize}.each do |domain,props| 
                @service_props = props
                service_template = "#{@template_dir}/main/service/TemplateService.erb"
                templateFile = File.open(service_template)
@@ -343,8 +344,9 @@ def generar_javaEntity entities
           @entity_insert = {}
           @entity_struc = {}
           @entity_join =  {}
-          @pk = []
+          @pk = [] 
           @identity = ""
+          
           attribute_raml["types"][@name_attr]["properties"].each do |property, value|
                if value["(pk)"]
                     @pk.push property
