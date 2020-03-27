@@ -337,6 +337,7 @@ def is_pk reference
 end
 def generar_javaEntity entities
      entities.each do |name,props|
+          p name
           name_file = name.split(".")[0]
           @name_attr = name.split(".")[1]
           attribute_dir =  Dir["#{@root_dir}/**/#{name_file.underscore}*"]
@@ -346,7 +347,7 @@ def generar_javaEntity entities
           @entity_join =  {}
           @pk = [] 
           @identity = ""
-          
+          p @name_attr
           attribute_raml["types"][@name_attr]["properties"].each do |property, value|
                if value["(pk)"]
                     @pk.push property
