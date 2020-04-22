@@ -31,7 +31,7 @@ public class <%= @project.camelize %>Application implements CommandLineRunner {
         jdbcTemplate.execute("DROP TABLE IF EXISTS <%= table.underscore %> ");
         jdbcTemplate.execute("CREATE TABLE <%= table.underscore %>(" +        <%script[:struc].each do |key, type| %>
         "<%=type[:name].underscore%> <% if type[:type]=="Long"%> int <% end %><% if type[:type]=="String"%> VARCHAR(255)<% end %><% if type[:type]=="Date"%> date<% end %>, " + <% end %> 
-        "PRIMARY KEY (<% script[:pk].each_with_index do |pk,index| %>`<%=pk%>`<% if index < script[:pk].size- 1  %>, <% end %><% end %>) )");
+        "PRIMARY KEY (<% script[:pk].each_with_index do |pk,index| %>`<%=pk[:name]%>`<% if index < script[:pk].size- 1  %>, <% end %><% end %>) )");
         <% end %>
 	}
 }

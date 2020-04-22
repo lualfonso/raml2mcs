@@ -1,0 +1,20 @@
+package <%= package %>.bean;
+
+import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+<% @class_imports.each do |value| %>
+import <%= value %>;<% end %>
+
+@Data
+@AllArgsConstructor
+@NoArgsConstructor<% @class_annotations.each do |value| %>
+<%= value %><% end %>
+public class <%= @name_attr %> implements Serializable {
+    <% @entity_struc.each do |key, type| %><% type[:annotation].each do |value| %>
+    <%= value %><% end %>
+    private <%= type[:typeJpa] %> <%= type[:name].camelize(:lower) %>;<% end %>
+    
+}

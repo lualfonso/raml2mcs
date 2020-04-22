@@ -1,0 +1,35 @@
+package <%= package %>.utils;
+
+import java.lang.reflect.Field;
+import org.springframework.data.jpa.domain.Specification;
+
+/**
+ *
+ * @author Luis
+ */
+
+public class CustomFilter<T> {
+    
+    public Specification<T> buildSpecifications() {
+        Specification<T> spec = null;
+        for (Field field : getClass().getDeclaredFields()) {
+            field.setAccessible(true);
+            try {
+                if (field.get(this) != null) {
+                    
+                    String[] string = (field.getName().contains("_") ? field.getName().split("_"): new String[]{"eq", field.getName()});
+                     String name = field.getName().replace(string[0].concat("_"), "");
+                    if (spec != null) {
+                        spec.and(new CustomSpecification<>(new SearchCriteria(name, string[0], field.get(this))));
+                    } else {
+                        spec = new CustomSpecification<>(new SearchCriteria(name, string[0], field.get(this)));
+                    }
+                }
+                field.setAccessible(false);
+            } catch (IllegalArgumentException | IllegalAccessException ex) {
+                //agregar log
+            }
+        }
+        return spec;
+    }
+}

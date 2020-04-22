@@ -1,7 +1,5 @@
 
 package <%= package %>.bean;
-
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,7 +10,7 @@ import java.math.BigDecimal;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class <%= @name_attr %>Bean {
+public class <%= @name_attr %> {
     <% @entity_struc.each do |key, type| %>
     private <%= type[:type] %> <%= type[:name].camelize(:lower) %>;<% end %>
     

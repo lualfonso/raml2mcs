@@ -1,0 +1,9 @@
+package <%= package %>.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import <%= package %>.bean.<%= @repository_name %>;
+
+public interface <%= @repository_name %>Repository extends JpaRepository<<%= @repository_name %>, Long> , JpaSpecificationExecutor<<%= @repository_name %>> {
+    
+}

@@ -1,23 +1,11 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package <%= package %>.service;
 
 import <%= package %>.model.*;
 
-/**
- *
- * @author CILALFONSO
- */
 public interface <%= @service_name %>Service {    <% @service_props.each do |service, props| %><% if props["get"] && service.end_with?("{#{props['get'][:request][:path].last}}") %>
     public <%= props["get"][:response][:object] %>Model get<%= props["props"][:entity].camelize %>(<% props["get"][:request][:path].each_with_index do |(path),index| %>Long <%= path %><% if index != props["get"][:request][:path].size - 1 %>,<% end %><% end %>);<% end %>    <% if props["get"] && !service.end_with?("{#{props['get'][:request][:path].last}}") %>
     public <%= props["get"][:response][:object] %>Model get<%= props["props"][:entity].pluralize.camelize %>(<% props["get"][:request][:path].each_with_index do |(path),index| %>Long <%= path %><% if index != props["get"][:request][:path].size - 1 %>,<% end %><% end %>);<% end %>    <% if props["post"] %>
     public <%= props["post"][:response][:object] %>Model post<%= props["props"][:entity].camelize %>(<%= props["post"][:request][:body] %>Model model);<% end %> <% if props["put"] %>
     public <%= props["put"][:response][:object] %>Model put<%= props["props"][:entity].camelize %>(<%= props["put"][:request][:body] %>Model model);<% end %><% if props["delete"] %>
     public void delete<%= props["props"][:entity].camelize %>(<% props["delete"][:request][:path].each_with_index do |(path),index| %>Long <%= path %><% if index != props["delete"][:request][:path].size - 1 %>,<% end %><% end %>);<% end %><% end %>
-    
-    
-
 }

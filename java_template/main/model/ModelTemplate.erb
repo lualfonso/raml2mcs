@@ -4,20 +4,11 @@ package <%= package %>.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonProperty;
-
-<% @attributes.each do |value, type| -%><% if type[:type] =="BigDecimal" -%>
-import java.math.BigDecimal; <% break %><% end %><% end %>
-<% @attributes.each do |value, type| -%><% if type[:type] =="Date" -%>
-import java.util.Date;<% break %><% end %><% end %>
-<% @attributes.each do |value, type| -%>
-<% if type[:type].include?"[]" -%>
+import com.fasterxml.jackson.annotation.JsonProperty;<% @attributes.each do |value, type| -%><% if type[:type] =="BigDecimal" -%>
+import java.math.BigDecimal; <% break %><% end %><% end %><% @attributes.each do |value, type| -%><% if type[:type] =="Date" -%>
+import java.util.Date;<% break %><% end %><% end %><% @attributes.each do |value, type| -%><% if type[:type].include?"[]" -%>
 import java.util.List;<% break %><% end %><% end %>
 
-/**
- *
- * @author CILALFONSO
- */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

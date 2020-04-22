@@ -1,0 +1,26 @@
+package <%= package %>.utils;
+
+import java.util.ArrayList;
+import java.util.List;
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Component;
+
+@Component
+public class OrderUtil {
+
+    public Sort BuildSort(List<String> orderBy, List<String> order) {
+        List<Sort.Order> sortOrder = new ArrayList<>();
+        orderBy.forEach((item)-> {
+            if (orderBy.indexOf(item) < order.size()) {
+                
+               sortOrder.add(new Sort.Order(Sort.Direction.fromString(order.get(orderBy.indexOf(item))),item));
+            }
+            else
+            {
+                sortOrder.add(new Sort.Order(Sort.Direction.ASC,item));
+            }
+        });
+        System.out.println(sortOrder.toString());
+        return Sort.by(sortOrder);
+    }
+}

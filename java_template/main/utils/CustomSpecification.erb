@@ -1,0 +1,59 @@
+package <%= package %>.utils;
+
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
+
+/**
+ *
+ * @author Luis
+ * @param <T>
+ */
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class CustomSpecification<T> implements Specification<T> {
+
+    private SearchCriteria criteria;
+
+    @Override
+    public Predicate toPredicate(Root<T> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+
+        if (criteria.getOperation().equalsIgnoreCase("gte")) {
+            return builder.greaterThanOrEqualTo(
+                    root.<String>get(criteria.getKey()), criteria.getValue().toString());
+        } else if (criteria.getOperation().equalsIgnoreCase("lte")) {
+            return builder.lessThanOrEqualTo(
+                    root.<String>get(criteria.getKey()), criteria.getValue().toString());
+        } else if (criteria.getOperation().equalsIgnoreCase("gt")) {
+            return builder.greaterThan(
+                    root.<String>get(criteria.getKey()), criteria.getValue().toString());
+        } else if (criteria.getOperation().equalsIgnoreCase("lt")) {
+            return builder.lessThan(
+                    root.<String>get(criteria.getKey()), criteria.getValue().toString());
+        } else if (criteria.getOperation().equalsIgnoreCase("cnt")) {
+            return builder.like(
+                    root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "%");
+        } else if (criteria.getOperation().equalsIgnoreCase("sw")) {
+            return builder.like(
+                    root.<String>get(criteria.getKey()), "" + criteria.getValue() + "%");
+
+        } else if (criteria.getOperation().equalsIgnoreCase("ew")) {
+            return builder.like(
+                    root.<String>get(criteria.getKey()), "%" + criteria.getValue() + "");
+        } else if (criteria.getOperation().equalsIgnoreCase("eq")) {
+            if (root.get(criteria.getKey()).getJavaType() == String.class) {
+                return builder.like(
+                        root.<String>get(criteria.getKey()),  criteria.getValue().toString());
+            } else {
+                return builder.equal(root.get(criteria.getKey()), criteria.getValue());
+            }
+        }
+        return null;
+    }
+}

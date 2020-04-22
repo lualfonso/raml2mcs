@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package <%= package %>.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,11 +6,9 @@ import org.springframework.stereotype.Service;
 import <%= package %>.model.*;
 import <%= package %>.service.<%= @service_name %>Service;<% last = "" %><% @service_props.each do |service, props| %><% if last != props["props"][:entity] || last=="" %><% last = props["props"][:entity] %>
 import <%= package %>.repository.<%= props["props"][:entity]%>Repository;
-import  <%= package %>.converter.<%= props["props"][:entity] %>Converter;    <% end %><% end %> 
-/**
- *
- * @author Luis Alfonso
- */
+import <%= package %>.converter.<%= props["props"][:entity] %>Converter;    <% end %><% end %> 
+
+
 @Service
 public class <%= @service_name %>ServiceImpl implements <%= @service_name %>Service {
      <% last = "" %>    <% @service_props.each do |service, props| %>

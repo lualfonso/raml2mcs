@@ -1,26 +1,19 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package <%= package %>.repository;
 
 import java.util.List;
 import java.util.Optional;
-import <%= package %>.bean.<%= @repository_name %>Bean;
+import <%= package %>.bean.<%= @repository_name %>;
 
 public interface <%= @repository_name %>Repository {
     int count();
 
-    int save(<%= @repository_name %>Bean entity);
+    int save(<%= @repository_name %> entity);
 
-    int update(<%= @repository_name %>Bean entity);
+    int update(<%= @repository_name %> entity);
 
-    int deleteById(<% @pk.each_with_index do |pk,index| %>Long <%= pk %><% if index != @pk.size - 1 %>, <% end %><% end %>);
+    int deleteById(<% @pk.each_with_index do |pk,index| %><%= pk[:type] %> <%= pk[:name] %><% if index != @pk.size - 1 %>, <% end %><% end %>);
 
-    List<<%= @repository_name %>Bean> findAll(<% @pk.each_with_index do |pk,index| %><%if index != @pk.size - 1 %>Long <%= pk %><% end %><% if index < @pk.size - 2 %>, <% end %><% end %>);
+    List<<%= @repository_name %>> findAll(<% @pk.each_with_index do |pk,index| %><%if index != @pk.size - 1 %>Long <%= pk[:name] %><% end %><% if index < @pk.size - 2 %>, <% end %><% end %>);
 
-    Optional<<%= @repository_name %>Bean> findById(<% @pk.each_with_index do |pk,index| %>Long <%= pk %><% if index < @pk.size - 1 %>, <% end %><% end %>);
-
-    
+    Optional<<%= @repository_name %>> findById(<% @pk.each_with_index do |pk,index| %><%= pk[:type] %> <%= pk[:name] %><% if index < @pk.size - 1 %>, <% end %><% end %>);   
 }

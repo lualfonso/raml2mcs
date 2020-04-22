@@ -3,3 +3,8 @@
 /newmcs/target/
 /java_output/
 /postman/
+/mcs.client/target/
+/mcs.clientJpa/target/
+/mcs.clients/target/
+/mcs.clientstest/target/
+/mcs-jpa/target/
